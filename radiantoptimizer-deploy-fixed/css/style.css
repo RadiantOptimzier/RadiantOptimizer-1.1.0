@@ -1484,6 +1484,17 @@ body {
     min-width: 130px;
     text-align: right;
     font-family: 'Poppins', sans-serif;
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    animation: numberGlow 2s ease-in-out infinite;
+}
+
+@keyframes numberGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    }
+    50% {
+        text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
+    }
 }
 
 .cta-potential-image img {
