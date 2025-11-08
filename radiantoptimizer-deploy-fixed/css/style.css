@@ -1198,10 +1198,190 @@ body {
     line-height: 1.9;
 }
 
-/* CTA Potential Section */
+/* CTA Potential Section - Modern Stats Cards */
 .cta-potential-section {
     padding: 5rem 0;
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+}
+
+.stats-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.stats-main-title {
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, #0066ff 0%, #00d9ff 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    animation: titleGradient 3s ease-in-out infinite;
+}
+
+@keyframes titleGradient {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+}
+
+.stats-description {
+    font-size: 1.2rem;
+    color: var(--text-grey);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.modern-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.stat-card {
     background: white;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0066ff, #00d9ff);
+    transform: scaleX(0);
+    transition: transform 0.6s ease;
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 102, 255, 0.2);
+    border-color: rgba(0, 102, 255, 0.3);
+}
+
+.stat-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.stat-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-before,
+.stat-after {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-grey);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--text-dark);
+}
+
+.stat-highlight {
+    background: linear-gradient(135deg, #0066ff 0%, #00d9ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: valuePulse 2s ease-in-out infinite;
+}
+
+@keyframes valuePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.stat-arrow {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary-blue);
+    animation: arrowBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(5px); }
+}
+
+.stat-improvement {
+    text-align: center;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 217, 255, 0.1) 100%);
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    border: 2px solid rgba(0, 102, 255, 0.2);
+}
+
+.fps-card:hover .stat-icon { animation: iconSpin 0.6s ease-in-out; }
+.ping-card:hover .stat-icon { animation: iconBounce 0.6s ease-in-out; }
+.latency-card:hover .stat-icon { animation: iconShake 0.6s ease-in-out; }
+
+@keyframes iconSpin {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(360deg); }
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    25%, 75% { transform: translateY(-10px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes iconShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
 }
 
 .cta-potential-content {
