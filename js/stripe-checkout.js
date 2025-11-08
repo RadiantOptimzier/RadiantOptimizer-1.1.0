@@ -90,11 +90,59 @@ async function purchaseRadiantOptimizer() {
         // Show transferring screen immediately
         showTransferringScreen();
 
-        // Get username from display name
-        const username = user.displayName;
         const email = user.email;
 
-        console.log('Creating checkout session for:', username);
+        // Get username - Priority: displayName > Firestore lookup > email prefix > UID
+        let username = user.displayName;
+        
+        // If no displayName, try to get from Firestore
+        if (!username) {
+            try {
+                // First try: Get by UID as document ID
+                const userDocByUID = await firebase.firestore().collection('users').doc(user.uid).get();
+                if (userDocByUID.exists) {
+                    const userData = userDocByUID.data();
+                    username = userData.username || userData.displayName || userData.email?.split('@')[0];
+                }
+                
+                // Second try: Query by username field matching displayName
+                if (!username && user.displayName) {
+                    const usersRef = firebase.firestore().collection('users');
+                    const userQueryByUsername = await usersRef.where('username', '==', user.displayName).limit(1).get();
+                    
+                    if (!userQueryByUsername.empty) {
+                        username = userQueryByUsername.docs[0].id;
+                    }
+                }
+                
+                // Third try: Query by email
+                if (!username) {
+                    const usersRef = firebase.firestore().collection('users');
+                    const userQueryByEmail = await usersRef.where('email', '==', email).limit(1).get();
+                    
+                    if (!userQueryByEmail.empty) {
+                        const userData = userQueryByEmail.docs[0].data();
+                        username = userData.username || userQueryByEmail.docs[0].id;
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching username from Firestore:', error);
+            }
+        }
+
+        // Final fallbacks: email prefix or UID
+        if (!username || username.trim() === '') {
+            username = email.split('@')[0];
+            console.log('Using email prefix as username:', username);
+        }
+        
+        // Ultimate fallback: use UID if somehow still empty
+        if (!username || username.trim() === '') {
+            username = user.uid;
+            console.log('Using UID as username fallback:', username);
+        }
+
+        console.log('Creating checkout session - Username:', username, 'Email:', email);
 
         // Call backend to create checkout session
         const response = await fetch(`${BACKEND_URL}/create-checkout-session`, {

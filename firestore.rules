@@ -19,13 +19,12 @@ service cloud.firestore {
     }
     
     match /users/{userId} {
-      allow read: if true;
+      allow read: if isAuthenticated();
       allow write: if isAuthenticated();
     }
     
     match /license_keys/{keyId} {
-      allow read: if isAuthenticated();
-      allow create, update, delete: if isAdmin();
+      allow read, write: if isAdmin();
     }
     
     match /purchases/{purchaseId} {
@@ -76,6 +75,18 @@ service cloud.firestore {
       // Users can delete their own reviews or admins can delete any
       allow delete: if isAuthenticated() && 
                        (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // Wheel spins - Only for paying customers (once per account)
+    match /wheel_spins/{username} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // User prizes from wheel spins
+    match /user_prizes/{prizeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
   }
 }

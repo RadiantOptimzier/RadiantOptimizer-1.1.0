@@ -269,6 +269,50 @@ if (signupForm) {
     });
 }
 
+// Validate and repair user data in Firestore
+async function validateUserData(user) {
+    try {
+        const username = user.displayName || user.uid;
+        const userDocRef = db.collection('users').doc(username);
+        const userDoc = await userDocRef.get();
+        
+        // If document doesn't exist, create it
+        if (!userDoc.exists) {
+            console.log('Creating missing Firestore document for user:', username);
+            await userDocRef.set({
+                uid: user.uid,
+                username: username,
+                email: user.email,
+                displayName: username,
+                role: 'user',
+                status: 'active',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                licenses: [],
+                purchases: []
+            });
+        } else {
+            // Document exists, check if it has all required fields
+            const userData = userDoc.data();
+            const updates = {};
+            
+            if (!userData.username) updates.username = username;
+            if (!userData.email) updates.email = user.email;
+            if (!userData.displayName) updates.displayName = username;
+            if (!userData.uid) updates.uid = user.uid;
+            if (!userData.licenses) updates.licenses = [];
+            if (!userData.purchases) updates.purchases = [];
+            
+            // Update if any fields were missing
+            if (Object.keys(updates).length > 0) {
+                console.log('Updating incomplete user document:', updates);
+                await userDocRef.update(updates);
+            }
+        }
+    } catch (error) {
+        console.error('Error validating user data:', error);
+    }
+}
+
 // Check authentication state
 auth.onAuthStateChanged(async (user) => {
     const currentPage = window.location.pathname.split('/').pop();
@@ -281,6 +325,9 @@ auth.onAuthStateChanged(async (user) => {
     if (user) {
         // User is signed in
         console.log('User signed in:', user.email);
+        
+        // Validate and repair user data if needed
+        await validateUserData(user);
         
         // Show profile button, hide sign-in button
         if (signinBtn) signinBtn.style.display = 'none';

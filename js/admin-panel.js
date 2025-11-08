@@ -172,7 +172,7 @@ function searchUsers() {
 }
 
 // View user details
-function viewUserDetails(userId) {
+async function viewUserDetails(userId) {
     const user = allUsers.find(u => u.docId === userId);
     if (!user) {
         showCustomModal('User not found.', 'Error');
@@ -180,6 +180,27 @@ function viewUserDetails(userId) {
     }
     
     currentUserDetails = user;
+    
+    // Get real-time HWID data from license_keys collection
+    const licenseKeysData = {};
+    if (user.licenses && user.licenses.length > 0) {
+        for (const license of user.licenses) {
+            const licenseKey = license.key || license.licenseKey;
+            try {
+                const licenseQuery = await db.collection('license_keys')
+                    .where('key', '==', licenseKey)
+                    .limit(1)
+                    .get();
+                
+                if (!licenseQuery.empty) {
+                    const licenseDoc = licenseQuery.docs[0].data();
+                    licenseKeysData[licenseKey] = licenseDoc.hwid || null;
+                }
+            } catch (error) {
+                console.error('Error fetching license HWID:', error);
+            }
+        }
+    }
     
     // Create detailed view
     const detailsHTML = `
@@ -218,16 +239,19 @@ function viewUserDetails(userId) {
             
             <div class="licenses-list">
                 <h4>License Keys (${user.licenses ? user.licenses.length : 0})</h4>
-                ${user.licenses && user.licenses.length > 0 ? user.licenses.map((license, index) => `
+                ${user.licenses && user.licenses.length > 0 ? user.licenses.map((license, index) => {
+                    const licenseKey = license.key || license.licenseKey || 'N/A';
+                    const actualHwid = licenseKeysData[licenseKey] || license.hwid || null;
+                    return `
                     <div class="license-item">
                         <div class="license-info">
-                            <div class="license-key">${license.key || license.licenseKey || 'N/A'}</div>
+                            <div class="license-key">${licenseKey}</div>
                             <div class="license-meta">
                                 Status: <strong>${license.status || 'active'}</strong> | 
                                 Purchased: ${license.purchaseDate ? new Date(license.purchaseDate.seconds * 1000).toLocaleDateString() : 'N/A'}
                             </div>
                             <div class="license-hwid">
-                                HWID: ${license.hwid || 'Not linked yet'}
+                                HWID: ${actualHwid ? actualHwid : '<span style="color: #ff9800;">Not activated yet</span>'}
                             </div>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
@@ -235,7 +259,7 @@ function viewUserDetails(userId) {
                             <button class="admin-btn danger" onclick="removeLicense('${user.docId}', ${index})">Delete</button>
                         </div>
                     </div>
-                `).join('') : '<p style="color: #666;">No licenses found</p>'}
+                `}).join('') : '<p style="color: #666;">No licenses found</p>'}
             </div>
             
             ${user.purchases && user.purchases.length > 0 ? `
@@ -1391,7 +1415,30 @@ async function saveGrantedLicense() {
     }
     
     try {
-        // Create the new license object
+        // Check if license key already exists in license_keys collection
+        const existingLicenseQuery = await db.collection('license_keys')
+            .where('key', '==', licenseKey)
+            .limit(1)
+            .get();
+        
+        if (!existingLicenseQuery.empty) {
+            showCustomModal('This license key already exists in the system.', 'Error');
+            return;
+        }
+        
+        // Create entry in license_keys collection (for desktop app validation)
+        await db.collection('license_keys').add({
+            key: licenseKey,
+            active: true,
+            hwid: null,
+            userId: user.uid || user.docId,
+            username: user.username,
+            grantedBy: 'admin',
+            grantedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            lastValidated: null
+        });
+        
+        // Also add to user's licenses array (for dashboard display)
         const newLicense = {
             key: licenseKey,
             licenseKey: licenseKey,
@@ -1401,23 +1448,9 @@ async function saveGrantedLicense() {
             grantedByAdmin: true
         };
         
-        // Get existing licenses or create empty array
         const existingLicenses = user.licenses || [];
-        
-        // Check if license key already exists
-        const keyExists = existingLicenses.some(l => 
-            (l.key === licenseKey || l.licenseKey === licenseKey)
-        );
-        
-        if (keyExists) {
-            showCustomModal('This license key already exists for this user.', 'Error');
-            return;
-        }
-        
-        // Add new license to array
         const updatedLicenses = [...existingLicenses, newLicense];
         
-        // Update user document
         await db.collection('users').doc(userId).update({
             licenses: updatedLicenses
         });
@@ -1456,7 +1489,15 @@ function openEditLicenseModal(userId, licenseIndex) {
     document.getElementById('editLicenseUsername').textContent = user.username || 'N/A';
     document.getElementById('currentLicenseKey').textContent = license.key || license.licenseKey || 'N/A';
     document.getElementById('newLicenseKey').value = license.key || license.licenseKey || '';
-    document.getElementById('licenseStatus').value = license.status || 'active';
+    
+    // Set status dropdown - simplified to active/deactivated
+    const statusSelect = document.getElementById('licenseStatus');
+    statusSelect.innerHTML = `
+        <option value="active">Active</option>
+        <option value="deactivated">Deactivated</option>
+    `;
+    statusSelect.value = license.status === 'deactivated' ? 'deactivated' : 'active';
+    
     document.getElementById('editLicenseUserId').value = userId;
     document.getElementById('editLicenseIndex').value = licenseIndex;
     document.getElementById('editLicenseModal').classList.add('active');
@@ -1511,6 +1552,19 @@ async function saveLicenseEdit() {
         await db.collection('users').doc(userId).update({
             licenses: updatedLicenses
         });
+        
+        // CRITICAL: Update license_keys collection so desktop app respects the status
+        const licenseQuery = await db.collection('license_keys')
+            .where('key', '==', newLicenseKey)
+            .limit(1)
+            .get();
+        
+        if (!licenseQuery.empty) {
+            const licenseDoc = licenseQuery.docs[0];
+            await licenseDoc.ref.update({
+                active: newStatus === 'active'  // true for active, false for deactivated
+            });
+        }
         
         showCustomModal('License updated successfully!', 'Success');
         closeEditLicenseModal();

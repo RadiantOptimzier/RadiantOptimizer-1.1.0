@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - RadiantOptimizer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-panel.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <!-- Custom Modal -->
+    <div class="custom-modal-overlay" id="customModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <h3 id="modalTitle">Notification</h3>
+                <button class="custom-modal-close" onclick="closeCustomModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <p id="modalMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" onclick="closeCustomModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit License Modal -->
+    <div class="custom-modal-overlay" id="editLicenseModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <h3>Edit License Key</h3>
+                <button class="custom-modal-close" onclick="closeEditLicenseModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <form id="editLicenseForm">
+                    <div class="form-group">
+                        <label>User:</label>
+                        <p id="editLicenseUsername" style="font-weight: 600; color: #0066ff;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Current License Key:</label>
+                        <p id="currentLicenseKey" style="font-weight: 600; color: #666; font-family: 'Consolas', 'Monaco', monospace;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="newLicenseKey">New License Key:</label>
+                        <input type="text" id="newLicenseKey" placeholder="Enter new license key (e.g., XXXX-XXXX-XXXX-XXXX)" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Consolas', 'Monaco', monospace;">
+                        <small style="color: #666; display: block; margin-top: 0.5rem;">Format: XXXX-XXXX-XXXX-XXXX</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="licenseStatus">Status:</label>
+                        <select id="licenseStatus" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="editLicenseUserId">
+                    <input type="hidden" id="editLicenseIndex">
+                </form>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" style="background: #666;" onclick="closeEditLicenseModal()">Cancel</button>
+                <button class="custom-modal-btn" onclick="saveLicenseEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grant License Modal -->
+    <div class="custom-modal-overlay" id="grantLicenseModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <h3>Grant License Key</h3>
+                <button class="custom-modal-close" onclick="closeGrantLicenseModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <form id="grantLicenseForm">
+                    <div class="form-group">
+                        <label>Granting License To:</label>
+                        <p id="grantLicenseUsername" style="font-weight: 600; color: #0066ff;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="licenseKeyInput">License Key:</label>
+                        <input type="text" id="licenseKeyInput" placeholder="Auto-generated key will appear here" readonly style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Consolas', 'Monaco', monospace; background: #f8f9fa;">
+                        <small style="color: #666; display: block; margin-top: 0.5rem;">A unique license key will be automatically generated</small>
+                    </div>
+                    <input type="hidden" id="grantLicenseUserId">
+                </form>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" style="background: #666;" onclick="closeGrantLicenseModal()">Cancel</button>
+                <button class="custom-modal-btn" onclick="saveGrantedLicense()">Grant License</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="custom-modal-overlay" id="editUserModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <h3>Edit User</h3>
+                <button class="custom-modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <form id="editUserForm">
+                    <div class="form-group">
+                        <label>Current Username:</label>
+                        <p id="currentUsername" style="font-weight: 600; color: #0066ff;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="newUsername">New Username:</label>
+                        <input type="text" id="newUsername" placeholder="Enter new username" required>
+                    </div>
+                    <input type="hidden" id="editUserId">
+                </form>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" style="background: #666;" onclick="closeEditModal()">Cancel</button>
+                <button class="custom-modal-btn" onclick="saveUsernameChange()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit News Modal -->
+    <div class="custom-modal-overlay" id="newsModal">
+        <div class="custom-modal" style="max-width: 600px;">
+            <div class="custom-modal-header">
+                <h3 id="newsModalTitle">Create News Post</h3>
+                <button class="custom-modal-close" onclick="closeNewsModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <form id="newsForm">
+                    <div class="form-group">
+                        <label for="newsTitle">Title *</label>
+                        <input type="text" id="newsTitle" placeholder="Enter post title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newsCategory">Category *</label>
+                        <select id="newsCategory" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                            <option value="news">News</option>
+                            <option value="update">Update</option>
+                            <option value="announcement">Announcement</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newsContent">Content *</label>
+                        <textarea id="newsContent" placeholder="Enter post content" required style="width: 100%; min-height: 150px; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif; resize: vertical;"></textarea>
+                    </div>
+                    <input type="hidden" id="editNewsId">
+                </form>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" style="background: #666;" onclick="closeNewsModal()">Cancel</button>
+                <button class="custom-modal-btn" onclick="saveNewsPost()">
+                    <span id="newsSaveText">Create Post</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Navigation -->
+    <nav class="admin-nav">
+        <div class="admin-nav-content">
+            <div class="admin-logo">
+                <img src="images/logo.jpg" alt="RadiantOptimizer">
+                <span>ADMIN PANEL</span>
+            </div>
+            <div class="admin-nav-actions">
+                <button class="admin-btn secondary" onclick="location.href='index.html'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                    Home
+                </button>
+                <button class="admin-btn danger" onclick="adminLogout()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Content -->
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <p>Manage users, licenses, and purchases</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Dashboard
+            </button>
+            <button class="admin-tab" data-tab="analytics" onclick="switchTab('analytics')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                Analytics
+            </button>
+            <button class="admin-tab" data-tab="users" onclick="switchTab('users')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Users
+            </button>
+            <button class="admin-tab" data-tab="news" onclick="switchTab('news')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                </svg>
+                News
+            </button>
+            <button class="admin-tab" data-tab="reviews" onclick="switchTab('reviews')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Reviews
+            </button>
+        </div>
+
+        <!-- Analytics Tab Content -->
+        <div id="analyticsTab" class="tab-content">
+            <!-- Revenue Overview -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>Revenue Analytics</h2>
+                    <div class="time-filter-buttons">
+                        <button class="filter-btn active" data-period="daily" onclick="filterRevenue('daily')">Daily</button>
+                        <button class="filter-btn" data-period="weekly" onclick="filterRevenue('weekly')">Weekly</button>
+                        <button class="filter-btn" data-period="monthly" onclick="filterRevenue('monthly')">Monthly</button>
+                    </div>
+                </div>
+                <div class="stats-overview">
+                    <div class="stat-box">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">$0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #0066ff, #00d9ff);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="avgOrderValue">$0</h3>
+                            <p>Avg Order Value</p>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="conversionRate">0%</h3>
+                            <p>Conversion Rate</p>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="keyRedemptionRate">0%</h3>
+                            <p>Key Redemption Rate</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container" style="background: white; padding: 2rem; border-radius: 12px; margin-top: 1.5rem;">
+                    <canvas id="revenueChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Geographic & Device Breakdown -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>Geographic Distribution</h2>
+                    </div>
+                    <div id="geoDistribution" class="geo-list">
+                        <p style="text-align: center; color: #666; padding: 2rem;">Loading data...</p>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>Device Breakdown</h2>
+                    </div>
+                    <div class="chart-container" style="background: white; padding: 2rem; border-radius: 12px;">
+                        <canvas id="deviceChart" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase Funnel -->
+            <div class="admin-section" style="margin-top: 1.5rem;">
+                <div class="section-header">
+                    <h2>Purchase Funnel Drop-off</h2>
+                </div>
+                <div class="funnel-container" id="purchaseFunnel">
+                    <div class="funnel-step">
+                        <div class="funnel-bar" style="width: 100%; background: #0066ff;">
+                            <span>Landing Page</span>
+                            <strong id="funnelLanding">0 visitors</strong>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar" style="width: 70%; background: #00d9ff;">
+                            <span>Product Page</span>
+                            <strong id="funnelProduct">0 visitors</strong>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar" style="width: 40%; background: #2ecc71;">
+                            <span>Checkout Started</span>
+                            <strong id="funnelCheckout">0 visitors</strong>
+                        </div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar" style="width: 25%; background: #27ae60;">
+                            <span>Purchase Complete</span>
+                            <strong id="funnelComplete">0 purchases</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Intelligence -->
+            <div class="admin-section" style="margin-top: 1.5rem;">
+                <div class="section-header">
+                    <h2>Marketing Intelligence</h2>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="marketing-card">
+                        <h3>Top Referral Sources</h3>
+                        <div id="referralSources" class="data-list">
+                            <p style="color: #666;">No data yet</p>
+                        </div>
+                    </div>
+                    <div class="marketing-card">
+                        <h3>Social Media Impact</h3>
+                        <div id="socialImpact" class="data-list">
+                            <p style="color: #666;">No data yet</p>
+                        </div>
+                    </div>
+                    <div class="marketing-card">
+                        <h3>Review Sentiment</h3>
+                        <div id="reviewSentiment" class="sentiment-display">
+                            <div class="sentiment-bar">
+                                <div class="sentiment-positive" style="width: 0%"></div>
+                            </div>
+                            <div class="sentiment-stats">
+                                <span>😊 <strong id="positiveCount">0</strong> Positive</span>
+                                <span>😐 <strong id="neutralCount">0</strong> Neutral</span>
+                                <span>😞 <strong id="negativeCount">0</strong> Negative</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="marketing-card">
+                        <h3>Active Users Online</h3>
+                        <div class="active-users-display">
+                            <div class="active-users-number">
+                                <span id="activeUsersCount">0</span>
+                                <p>Users browsing now</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab Content -->
+        <div id="dashboardTab" class="tab-content active">
+            <!-- Stats Overview -->
+            <div class="stats-overview">
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #0066ff, #00d9ff);">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #00d9ff, #0066ff);">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalPurchases">0</h3>
+                        <p>Total Purchases</p>
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ff6b6b, #ff4757);">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="recentActivity">0</h3>
+                        <p>Recent Activity</p>
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="activeLicenses">0</h3>
+                        <p>Active Licenses</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity with Filters -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                    <div class="activity-filters">
+                        <button class="filter-btn active" data-filter="all" onclick="filterActivity('all')">
+                            All Activity
+                        </button>
+                        <button class="filter-btn" data-filter="users" onclick="filterActivity('users')">
+                            New Users
+                        </button>
+                        <button class="filter-btn" data-filter="purchases" onclick="filterActivity('purchases')">
+                            Purchases
+                        </button>
+                    </div>
+                </div>
+                <div class="activity-feed" id="activityFeed">
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        Loading activity...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab Content -->
+        <div id="usersTab" class="tab-content">
+            <!-- Search Section -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>User Search</h2>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="userSearch" placeholder="Search by username or email..." onkeyup="searchUsers()">
+                    <button class="admin-btn primary" onclick="searchUsers()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>All Users</h2>
+                    <button class="admin-btn primary" onclick="refreshUsers()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+                <div class="users-table-container">
+                    <table class="users-table" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Licenses</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 3rem;">
+                                    <div class="loading-spinner"></div>
+                                    <p>Loading users...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- News Tab Content -->
+        <div id="newsTab" class="tab-content">
+            <!-- News Management Section -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>News Management</h2>
+                    <button class="admin-btn primary" onclick="openCreateNewsModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create News Post
+                    </button>
+                </div>
+                <div class="news-management-grid" id="newsManagementGrid">
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        Loading news posts...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Tab Content -->
+        <div id="reviewsTab" class="tab-content">
+            <!-- Reviews Management Section -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>Reviews Management</h2>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="admin-btn success" onclick="openCreateFakeReviewModal()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Create Fake Review
+                        </button>
+                        <button class="admin-btn primary" onclick="refreshReviews()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Review Filters -->
+                <div class="review-filters" style="margin-bottom: 1.5rem;">
+                    <button class="filter-btn active" data-filter="all" onclick="filterReviews('all')">All Reviews</button>
+                    <button class="filter-btn" data-filter="real" onclick="filterReviews('real')">Real Reviews Only</button>
+                    <button class="filter-btn" data-filter="fake" onclick="filterReviews('fake')">Fake Reviews Only</button>
+                </div>
+                <div class="reviews-management-container" id="reviewsManagementContainer">
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        Loading reviews...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Create Fake Review Modal -->
+    <div class="custom-modal-overlay" id="createFakeReviewModal">
+        <div class="custom-modal" style="max-width: 600px;">
+            <div class="custom-modal-header">
+                <h3>Create Fake Review</h3>
+                <button class="custom-modal-close" onclick="closeFakeReviewModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <form id="fakeReviewForm">
+                    <div class="form-group">
+                        <label for="fakeReviewUsername">Username *</label>
+                        <input type="text" id="fakeReviewUsername" placeholder="Enter fake username" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                    </div>
+                    <div class="form-group">
+                        <label for="fakeReviewRating">Rating *</label>
+                        <select id="fakeReviewRating" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                            <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                            <option value="3">⭐⭐⭐ 3 Stars</option>
+                            <option value="2">⭐⭐ 2 Stars</option>
+                            <option value="1">⭐ 1 Star</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fakeReviewContent">Review Content *</label>
+                        <textarea id="fakeReviewContent" placeholder="Enter review content (min 3 characters)" required style="width: 100%; min-height: 150px; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif; resize: vertical;"></textarea>
+                        <small style="color: #666;">Minimum 3 characters</small>
+                    </div>
+                </form>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" style="background: #666;" onclick="closeFakeReviewModal()">Cancel</button>
+                <button class="custom-modal-btn" onclick="saveFakeReview()">Create Fake Review</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Review Modal -->
+    <div class="custom-modal-overlay" id="editReviewModal">
+        <div class="custom-modal" style="max-width: 600px;">
+            <div class="custom-modal-header">
+                <h3>Edit Review</h3>
+                <button class="custom-modal-close" onclick="closeEditReviewModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <form id="editReviewForm">
+                    <div class="form-group">
+                        <label>Reviewer:</label>
+                        <p id="editReviewUsername" style="font-weight: 600; color: #0066ff;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="editReviewRating">Rating *</label>
+                        <select id="editReviewRating" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif;">
+                            <option value="1">⭐ 1 Star</option>
+                            <option value="2">⭐⭐ 2 Stars</option>
+                            <option value="3">⭐⭐⭐ 3 Stars</option>
+                            <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editReviewContent">Content *</label>
+                        <textarea id="editReviewContent" placeholder="Enter review content" required style="width: 100%; min-height: 150px; padding: 0.75rem 1rem; border: 2px solid #e3e6ed; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif; resize: vertical;"></textarea>
+                    </div>
+                    <input type="hidden" id="editReviewId">
+                </form>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" style="background: #666;" onclick="closeEditReviewModal()">Cancel</button>
+                <button class="custom-modal-btn" onclick="saveReviewChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script src="js/main.js"></script>
+    <script src="js/admin-panel.js"></script>
+</body>
+</html>
