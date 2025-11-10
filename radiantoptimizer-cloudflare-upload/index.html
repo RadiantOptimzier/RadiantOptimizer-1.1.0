@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RadiantOptimizer - Premium PC Optimization</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cursor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Particles JS - Mobile Only -->
+    <div id="particles-js"></div>
+
+    <!-- Custom Modal -->
+    <div class="custom-modal-overlay" id="customModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <h3 id="modalTitle">Notification</h3>
+                <button class="custom-modal-close" onclick="closeCustomModal()">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <p id="modalMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn" onclick="closeCustomModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <img src="images/logo.jpg" alt="RadiantOptimizer">
+                    <span>RADIANT OPTIMIZER</span>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home">HOME</a></li>
+                    <li><a href="news.html">NEWS</a></li>
+                    <li><a href="#services">PURCHASE</a></li>
+                    <li><a href="#features">FEATURES</a></li>
+                    <li><a href="reviews.html">REVIEWS</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li id="authButtonContainer">
+                        <button class="signin-button" id="signinBtn" onclick="location.href='login.html'" style="display: none;">SIGN IN</button>
+                        <button class="profile-button" id="profileBtn" onclick="location.href='dashboard.html'" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <span id="profileUsername">User</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-main">
+        <canvas id="topoCanvas"></canvas>
+        <div class="container">
+            <div class="hero-content-main">
+                <h1 class="hero-number-one">#1 PC Optimizer</h1>
+                <h2 class="hero-main-title">
+                    Add 10-20 FPS, Reduce Ping 10-20ms,<br>
+                    Eliminate Stuttering - In 5 Minutes
+                </h2>
+                <p class="hero-description">Professional-grade PC optimization that delivers measurable results. No placebo tweaks. No fake promises. Just real performance gains.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About/Release Potential Section -->
+    <section class="cta-potential-section">
+        <div class="container">
+            <div class="stats-header">
+                <h2 class="stats-main-title">Real Performance Gains You Can Measure</h2>
+                <p class="stats-description">Every tweak is tested and verified. These aren't placebo effects - you'll see real improvements within minutes.</p>
+            </div>
+            
+            <div class="modern-stats-grid">
+                <!-- FPS Card -->
+                <div class="stat-card fps-card">
+                    <div class="stat-icon">🎮</div>
+                    <h3 class="stat-title">FPS Boost</h3>
+                    <div class="stat-comparison">
+                        <div class="stat-before">
+                            <span class="stat-label">Before</span>
+                            <span class="stat-value">87</span>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                        <div class="stat-after">
+                            <span class="stat-label">After</span>
+                            <span class="stat-value stat-highlight">102</span>
+                        </div>
+                    </div>
+                    <div class="stat-improvement">+15 FPS Average</div>
+                </div>
+
+                <!-- Ping Card -->
+                <div class="stat-card ping-card">
+                    <div class="stat-icon">📡</div>
+                    <h3 class="stat-title">Ping Reduction</h3>
+                    <div class="stat-comparison">
+                        <div class="stat-before">
+                            <span class="stat-label">Before</span>
+                            <span class="stat-value">32ms</span>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                        <div class="stat-after">
+                            <span class="stat-label">After</span>
+                            <span class="stat-value stat-highlight">18ms</span>
+                        </div>
+                    </div>
+                    <div class="stat-improvement">-14ms Faster Response</div>
+                </div>
+
+                <!-- Latency Card -->
+                <div class="stat-card latency-card">
+                    <div class="stat-icon">⚡</div>
+                    <h3 class="stat-title">System Latency</h3>
+                    <div class="stat-comparison">
+                        <div class="stat-before">
+                            <span class="stat-label">Before</span>
+                            <span class="stat-value">150ms</span>
+                        </div>
+                        <div class="stat-arrow">→</div>
+                        <div class="stat-after">
+                            <span class="stat-label">After</span>
+                            <span class="stat-value stat-highlight">90ms</span>
+                        </div>
+                    </div>
+                    <div class="stat-improvement">-60ms Lower Latency</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" style="padding: 60px 20px; background: #0a0a0a;">
+        <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+            <h2 style="font-size: 32px; margin-bottom: 20px; color: #fff;">
+                From Slow to Smooth in 3 Simple Steps
+            </h2>
+            <p style="color: #aaa; font-size: 18px; margin-bottom: 50px;">
+                No technical knowledge required. No manual Registry editing. No risk.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 40px;">
+                
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">1️⃣</div>
+                    <h3 style="color: #00ff88; margin-bottom: 15px; font-size: 24px;">Download & Install</h3>
+                    <p style="color: #ccc; line-height: 1.6;">
+                        Purchase, download, and install in 2 minutes. 
+                        Enter your license key. Clean installation, no bloatware.
+                    </p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">2️⃣</div>
+                    <h3 style="color: #00ff88; margin-bottom: 15px; font-size: 24px;">Click "Safe Tweaks"</h3>
+                    <p style="color: #ccc; line-height: 1.6;">
+                        One button applies all 156 optimizations automatically. 
+                        Backup created first. Takes 2 minutes.
+                    </p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div style="font-size: 60px; margin-bottom: 20px;">3️⃣</div>
+                    <h3 style="color: #00ff88; margin-bottom: 15px; font-size: 24px;">Launch Your Game</h3>
+                    <p style="color: #ccc; line-height: 1.6;">
+                        Feel the difference immediately. 
+                        More FPS, lower ping, zero stutters. No restart needed.
+                    </p>
+                </div>
+
+            </div>
+
+            <p style="margin-top: 50px; font-size: 20px; color: #fff; font-weight: bold;">
+                That's it. No complicated setup. No technical skills needed. No risk.
+            </p>
+        </div>
+    </section>
+
+    <!-- Premium Product Section -->
+    <section id="services" class="premium-product-section">
+        <div class="container">
+            <div class="section-header-center">
+                <p class="section-pre-title">BEST PRICE ON THE MARKET</p>
+                <h2 class="section-main-title">Unlock True Power</h2>
+            </div>
+
+            <div class="premium-product-card">
+                <div class="premium-badge">PREMIUM</div>
+                
+                <div class="premium-price">
+                    <div style="font-size: 24px; color: #00ff88; margin-bottom: 10px;">🚀 LAUNCH SPECIAL: <span class="price-amount">$33</span></div>
+                    <div style="font-size: 16px; color: #aaa; text-decoration: line-through;">Regular Price: $39 (Effective June 7, 2026)</div>
+                    <div id="countdown" style="color: #ff6b6b; font-weight: bold; margin: 10px 0; font-size: 14px;"></div>
+                </div>
+                <p class="premium-payment-type" style="color: #ffa500; font-weight: bold;">⏰ Lock in launch pricing before increase</p>
+
+                <div class="premium-features-list">
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>One-Time Payment - Lifetime Access</span>
+                    </div>
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>156 Verified Optimization Tweaks</span>
+                    </div>
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Automatic System Backup Protection</span>
+                    </div>
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>One-Click Application - No Tech Skills Needed</span>
+                    </div>
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>All Future Updates Included Forever</span>
+                    </div>
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>24/7 Discord Support Community</span>
+                    </div>
+                    <div class="premium-feature-item">
+                        <svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Windows 10 & 11 Compatible</span>
+                    </div>
+                </div>
+
+                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="color: #00ff88; margin-bottom: 15px; font-size: 18px;">💎 WHAT YOU'LL GET IMMEDIATELY:</h4>
+                    <ul style="list-style: none; padding: 0; color: #ccc; text-align: left;">
+                        <li style="padding: 5px 0;">• 10-20 FPS Boost in Games</li>
+                        <li style="padding: 5px 0;">• 10-20ms Lower Ping</li>
+                        <li style="padding: 5px 0;">• 60% Fewer Stutters</li>
+                        <li style="padding: 5px 0;">• 30% Faster Boot Times</li>
+                        <li style="padding: 5px 0;">• Smoother Overall PC Performance</li>
+                    </ul>
+                </div>
+
+                <div style="background: #1a1a1a; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="color: #00ff88; margin-bottom: 15px; font-size: 18px;">🛡️ 100% SAFE TO USE:</h4>
+                    <ul style="list-style: none; padding: 0; color: #ccc; text-align: left;">
+                        <li style="padding: 5px 0;">• Prompts you to create a restore point before applying tweaks (optional - can be skipped)</li>
+                        <li style="padding: 5px 0;">• One-click undo button if you want to revert</li>
+                        <li style="padding: 5px 0;">• No system damage risk - All tweaks are reversible</li>
+                        <li style="padding: 5px 0;">• Professional support via Discord if you need help</li>
+                    </ul>
+                </div>
+
+                <button class="premium-purchase-btn" onclick="purchaseRadiantOptimizer()">
+                    <svg class="cart-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    Purchase Radiant Optimizer
+                </button>
+
+                <p class="premium-note">After purchase, your license key will be displayed immediately and stored in your User Panel.</p>
+                <p class="premium-note" style="margin-top: 0.5rem;">🔒 Digital product - All sales final. We're committed to your success and provide full Discord support to ensure the program works for you.</p>
+            </div>
+
+            <!-- Safety Section -->
+            <section id="safety" style="background: #1a1a1a; padding: 60px 20px; margin: 40px 0; border-radius: 15px;">
+                <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+                    <h2 style="font-size: 32px; margin-bottom: 40px; color: #fff;">
+                        🛡️ Why Radiant Optimizer is 100% Safe
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px;">
+                        
+                        <div style="background: #252525; padding: 30px; border-radius: 10px;">
+                            <h3 style="color: #00ff88; margin-bottom: 15px;">✅ Restore Point Option</h3>
+                            <p style="color: #ccc; line-height: 1.6;">
+                                Before applying tweaks, you're prompted to create a Windows restore point (optional - can be skipped). 
+                                One click to undo everything if you create one.
+                            </p>
+                        </div>
+
+                        <div style="background: #252525; padding: 30px; border-radius: 10px;">
+                            <h3 style="color: #00ff88; margin-bottom: 15px;">✅ No System Damage</h3>
+                            <p style="color: #ccc; line-height: 1.6;">
+                                Every tweak is reversible. No file deletions, no permanent changes. 
+                                Your PC stays safe while you optimize performance.
+                            </p>
+                        </div>
+
+                        <div style="background: #252525; padding: 30px; border-radius: 10px;">
+                            <h3 style="color: #00ff88; margin-bottom: 15px;">✅ Clean Software</h3>
+                            <p style="color: #ccc; line-height: 1.6;">
+                                No malware. No bloatware. No hidden software. No data collection. 
+                                Just pure PC optimization in a professional package.
+                            </p>
+                        </div>
+
+                        <div style="background: #252525; padding: 30px; border-radius: 10px;">
+                            <h3 style="color: #00ff88; margin-bottom: 15px;">✅ Expert Support</h3>
+                            <p style="color: #ccc; line-height: 1.6;">
+                                Join our Discord community for 24/7 support. 
+                                We'll help you with any questions or issues you encounter.
+                            </p>
+                        </div>
+
+                        <div style="background: #252525; padding: 30px; border-radius: 10px;">
+                            <h3 style="color: #00ff88; margin-bottom: 15px;">✅ Windows Approved</h3>
+                            <p style="color: #ccc; line-height: 1.6;">
+                                Only official Windows Registry and system settings modifications. 
+                                No dangerous hacks or risky system file changes.
+                            </p>
+                        </div>
+
+                        <div style="background: #252525; padding: 30px; border-radius: 10px;">
+                            <h3 style="color: #00ff88; margin-bottom: 15px;">✅ Verified Tweaks</h3>
+                            <p style="color: #ccc; line-height: 1.6;">
+                                All 156 tweaks have been tested and verified. 
+                                Real performance gains, not placebo effects.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Showcase -->
+            <div id="features" class="features-showcase">
+                <h3 class="features-showcase-title">What You'll Get</h3>
+                <div class="features-grid">
+                    <div class="feature-showcase-item internet-horizontal">
+                        <img src="images/internet-tweaks.png" alt="Internet Tweaks">
+                        <div class="internet-text-content">
+                            <h4>Reduce Your Ping by 10-20ms - Feel The Difference</h4>
+                            <p>Eliminate Windows network throttling that slows your connection. Your shots will register faster, and you'll notice immediate improvements in online gameplay responsiveness. Advanced tweaks may reduce ping an additional 5-10ms for competitive players.</p>
+                            <ul style="list-style: none; padding: 0; margin-top: 15px; color: #00ff88;">
+                                <li style="padding: 5px 0;">✅ 10-20ms average ping reduction</li>
+                                <li style="padding: 5px 0;">✅ Faster shot registration in FPS games</li>
+                                <li style="padding: 5px 0;">✅ More stable connection (fewer lag spikes)</li>
+                                <li style="padding: 5px 0;">✅ Proven results on all connection types</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature-showcase-item fps-horizontal">
+                        <img src="images/fps tweaks.png" alt="FPS">
+                        <div class="fps-text-content">
+                            <h4>Gain 10-20 FPS Instantly - See The Numbers Go Up</h4>
+                            <p>Remove Windows background processes and system overhead that waste your GPU power. Most users see 10-20 FPS improvements immediately, with some gaining even more on older systems. All changes are reversible with one click.</p>
+                            <ul style="list-style: none; padding: 0; margin-top: 15px; color: #00ff88;">
+                                <li style="padding: 5px 0;">✅ 10-20 FPS average boost</li>
+                                <li style="padding: 5px 0;">✅ Improved frame consistency (better 1% lows)</li>
+                                <li style="padding: 5px 0;">✅ Reduced input lag for faster reactions</li>
+                                <li style="padding: 5px 0;">✅ No restart needed - works immediately</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature-showcase-item latency-horizontal">
+                        <img src="images/low-latency.png" alt="Latency">
+                        <div class="latency-text-content">
+                            <h4>Reduce System Latency by 30-70ms - Feel Every Action Instantly</h4>
+                            <p>Optimize your entire input chain from mouse click to screen response. Remove Windows scheduling delays that add milliseconds of lag. Perfect for competitive FPS, fighting games, and rhythm games where every millisecond matters.</p>
+                            <ul style="list-style: none; padding: 0; margin-top: 15px; color: #00ff88;">
+                                <li style="padding: 5px 0;">✅ 30-70ms total latency reduction</li>
+                                <li style="padding: 5px 0;">✅ Faster mouse/keyboard response</li>
+                                <li style="padding: 5px 0;">✅ Smoother, more responsive gameplay</li>
+                                <li style="padding: 5px 0;">✅ Competitive advantage in reaction-based games</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature-showcase-item smoothness-horizontal">
+                        <img src="images/system-smoothness.png" alt="Smoothness">
+                        <div class="smoothness-text-content">
+                            <h4>System Smoothness</h4>
+                            <p>Maximize Windows gaming for smoother performance and less variability. Reduce micro stutters and improve frame time variance by optimizing system schedules, disk I/O, and GPU scheduling. Expect 15 to 30% better frame time variance with less hitching and improved 1% lows. Most beneficial for systems with background processes or older hardware.</p>
+                        </div>
+                    </div>
+                    <div class="feature-showcase-item performance-horizontal">
+                        <img src="images/performance.png" alt="Performance">
+                        <div class="performance-text-content">
+                            <h4>Peak Performance</h4>
+                            <p>15 highly effective kernel-level optimizations that remove CPU scheduling, memory management, disk I/O, and graphics rendering bottlenecks. Ideal for gamers, streamers, and power users. Experience 10-25% faster application launches, reduced stuttering, lower latency, and 30-50% faster boot times. Results vary by hardware and system state.</p>
+                        </div>
+                    </div>
+                    <div class="feature-showcase-item pc-optimization-horizontal">
+                        <img src="images/pc checkup.png" alt="PC Checkup">
+                        <div class="pc-optimization-text-content">
+                            <h4>PC Repair Tool</h4>
+                            <p>Complete system tune-up</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <div class="section-header-center">
+                <p class="section-pre-title">TESTIMONIALS</p>
+                <h2 class="section-main-title">What players say about us</h2>
+            </div>
+
+            <div class="testimonials-slider">
+                <div class="testimonial-item">
+                    <div class="testimonial-avatar">
+                        <img src="images/yta0xtiii3m21.jpg" alt="VeNoMized">
+                    </div>
+                    <div class="testimonial-header">
+                        <strong>VeNoMized</strong>
+                        <span>Verified User</span>
+                    </div>
+                    <p class="testimonial-text">"Felt like my shots were actually hitting and don't see any more packet loss issues."</p>
+                </div>
+                <div class="testimonial-item">
+                    <div class="testimonial-avatar">
+                        <img src="images/077e2b14caf7021f6d8c9e6c8e047d6f.jpg" alt="relloFN">
+                    </div>
+                    <div class="testimonial-header">
+                        <strong>relloFN</strong>
+                        <span>Verified User</span>
+                    </div>
+                    <p class="testimonial-text">"Slamming so many kids in 1v1 box fights now ahahaha"</p>
+                </div>
+                <div class="testimonial-item">
+                    <div class="testimonial-avatar">
+                        <img src="images/solo-leveling.avif" alt="AirwalkX">
+                    </div>
+                    <div class="testimonial-header">
+                        <strong>AirwalkX</strong>
+                        <span>Verified User</span>
+                    </div>
+                    <p class="testimonial-text">"Went from a cool lil 87 - 94 fps to 92 - 101"</p>
+                </div>
+                <div class="testimonial-item">
+                    <div class="testimonial-avatar">
+                        <img src="images/GRWko1Na0AA-EMe.jpg" alt="Reevy">
+                    </div>
+                    <div class="testimonial-header">
+                        <strong>Reevy</strong>
+                        <span>Verified User</span>
+                    </div>
+                    <p class="testimonial-text">"Honestly surprised after applying some tweaks felt Diffy the first game i loaded up"</p>
+                </div>
+                <div class="testimonial-item">
+                    <div class="testimonial-avatar">
+                        <img src="images/6509-uk-drill-1.png" alt="Veaire">
+                    </div>
+                    <div class="testimonial-header">
+                        <strong>Veaire</strong>
+                        <span>Verified User</span>
+                    </div>
+                    <p class="testimonial-text">"wow honeslty i didnt think the opti would be this good. my pc overall just feels really good and smooth."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section class="support-section">
+        <div class="container">
+            <div class="support-content">
+                <p class="support-pre-title">dont worry we got you!</p>
+                <h2 class="support-title">any issues or questions join our discord below</h2>
+                <p class="support-description">were happy to help and make sure to join and redeem your license key to get our radiant role.</p>
+                
+                <div class="support-links">
+                    <a href="https://discord.gg/nFzZRjDHGF" target="_blank" class="support-link discord-button">
+                        <img src="images/PRywUXcqg0v5DD6s7C3LyQ.jpeg" alt="Discord" class="discord-logo">
+                        <span>Join our Discord</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header-center">
+                <p class="section-pre-title">FAQs</p>
+                <h2 class="section-main-title">Frequently Asked <span style="color: #0066ff;">Questions</span></h2>
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3 class="faq-question">Can the key be shared?</h3>
+                    <p class="faq-answer">License keys are tied to your PC. If you get a new PC or swap motherboards, you'll need to purchase the program again for a new key. This prevents key sharing across multiple users.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Will these tweaks get me banned in games?</h3>
+                    <p class="faq-answer">Nope, you're completely safe! Our tweaks just optimize your system and network—no game file edits, no injections, nothing shady. You get better performance without any risk of a ban.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Can applying tweaks break my PC?</h3>
+                    <p class="faq-answer">Not at all! In fact, our tweaks make your PC healthier by debloating and decluttering your system, leading to faster processing, quicker internet speeds, and a smoother, more efficient experience.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">What if my PC isn't good?</h3>
+                    <p class="faq-answer">No worries! Even if your PC isn't top-tier, our tweaks help maximize performance, reduce lag, and improve responsiveness—so you get the best experience possible.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">How do I contact support to ask questions or report bugs?</h3>
+                    <p class="faq-answer">We have a Discord where you can make Support tickets -- Bug report Tickets -- and a General Chat to chat with other users!</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">How much of a difference in FPS or internet performance will I see?</h3>
+                    <p class="faq-answer">Our tweaks improve internet speeds, system latency, FPS, and overall performance. The percentage of improvement depends on the tweaks you apply, your PC's specifications, and your current internet speeds. While we can reduce ping, stutters, and lag, we cannot increase your Mbps, as that is controlled by your ISP.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">What if I reset my PC? Will I have to buy it again?</h3>
+                    <p class="faq-answer">When you reset your PC, any applied tweaks will be removed. All you need to do is re-download the program, re-enter your key, and reapply your tweaks. Simple as that.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">So if I get a new PC or change my motherboard, can I get another key for free?</h3>
+                    <p class="faq-answer">No, license keys are tied to your PC. If you get a new PC or change your motherboard, you'll need to purchase the program again for a new key. This is in place to prevent key sharing.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">What do you mean by new tweaks, technology, and tools?</h3>
+                    <p class="faq-answer">After purchasing, we'll continuously refine, research, and develop new tech, tools, and tweaks to push your PC beyond its limits. Our goal is to deliver performance boosts that feel like a hardware upgrade—without the cost.</p>
+                </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">How long does it take to see results?</h3>
+                        <p class="faq-answer">Results are immediate. Most users see FPS improvements within 30 seconds of applying Safe Tweaks. Ping improvements are noticeable in your first game after optimization. Most tweaks work instantly, though some system-level changes (like HPET or VBS) may require a restart.</p>
+                    </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Can I undo changes if I don't like them?</h3>
+                    <p class="faq-answer">Absolutely! You're prompted to create a restore point before applying tweaks (optional). There's also a one-click undo button in the app that reverts everything to your original settings. You can experiment with zero risk.</p>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">Do I need technical knowledge to use this?</h3>
+                    <p class="faq-answer">Nope. Just click "Enable Safe Tweaks" and the program handles everything automatically. No manual Registry editing. No command-line skills needed. Built for everyone, from beginners to experts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4 class="footer-title">About Us</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Purchase</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="reviews.html">Reviews</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Social</h4>
+                    <div class="footer-social">
+                        <a href="https://discord.gg/nFzZRjDHGF" target="_blank">Discord</a>
+                        <a href="https://x.com/RadiantOpti" target="_blank">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 RadiantOptimizer. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Particles JS - Mobile Only -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script src="js/stripe-checkout.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cursor.js"></script>
+    
+    <!-- Countdown Timer Script -->
+    <script>
+    // Countdown Timer to June 7, 2026
+    function updateCountdown() {
+        const targetDate = new Date('June 7, 2026 00:00:00').getTime();
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        const countdownElement = document.getElementById('countdown');
+        if (countdownElement) {
+            countdownElement.innerHTML = 
+                `⏰ ${days} days, ${hours} hours, ${minutes} minutes remaining at launch price`;
+
+            if (distance < 0) {
+                countdownElement.innerHTML = "Launch pricing has ended";
+            }
+        }
+    }
+
+    setInterval(updateCountdown, 60000); // Update every minute
+    updateCountdown(); // Initial call
+    </script>
+</body>
+</html>

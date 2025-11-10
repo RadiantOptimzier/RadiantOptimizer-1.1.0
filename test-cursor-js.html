@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Cursor Test - JavaScript Animation</title>
+    <style>
+        /* Initial cursor */
+        * {
+            cursor: url('cursor_frames/frame_000.png'), auto !important;
+        }
+        
+        /* Keep text cursor for inputs */
+        input[type="text"],
+        textarea,
+        select {
+            cursor: text !important;
+        }
+        
+        /* Page styles */
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            padding: 50px;
+        }
+
+        .test-area {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            background: #252525;
+            color: white;
+            border: 1px solid #00ff88;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #0f3f0f;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .error {
+            background: #3f0f0f;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+        
+        .info {
+            background: #0f0f3f;
+            border: 1px solid #4444ff;
+            color: #8888ff;
+        }
+        
+        .frame-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin: 2px;
+            border-radius: 3px;
+            transition: background 0.1s;
+        }
+        
+        .frame-active {
+            background: #00ff88;
+        }
+        
+        .frame-inactive {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌈 Rainbow Cursor Test - JavaScript Animation</h1>
+    
+    <div class="test-area">
+        <h2>Animated Rainbow Cursor Test</h2>
+        <p>The cursor should be animating through rainbow colors!</p>
+        
+        <button>Hover over me!</button>
+        <button>Click me!</button>
+        
+        <br><br>
+        
+        <input type="text" placeholder="Type something here...">
+        
+        <br><br>
+        
+        <div id="status"></div>
+        
+        <div id="frame-indicators" style="margin-top: 10px;">
+            <p>Current frame animation:</p>
+            <span class="frame-indicator" id="frame-0"></span>
+            <span class="frame-indicator" id="frame-1"></span>
+            <span class="frame-indicator" id="frame-2"></span>
+            <span class="frame-indicator" id="frame-3"></span>
+            <span class="frame-indicator" id="frame-4"></span>
+            <span class="frame-indicator" id="frame-5"></span>
+            <span class="frame-indicator" id="frame-6"></span>
+            <span class="frame-indicator" id="frame-7"></span>
+        </div>
+    </div>
+    
+    <div class="test-area">
+        <h3>Animation Details:</h3>
+        <ul>
+            <li>✅ Black arrow with rainbow gradient outline</li>
+            <li>✅ 8 frames cycling every 100ms (800ms total cycle)</li>
+            <li>✅ JavaScript-powered animation for maximum compatibility</li>
+            <li>✅ Zero latency impact on cursor movement</li>
+        </ul>
+    </div>
+
+    <script>
+        console.log('Rainbow cursor test page loaded');
+        
+        // Cursor frame paths
+        const cursorFrames = [
+            'cursor_frames/frame_000.png',
+            'cursor_frames/frame_001.png',
+            'cursor_frames/frame_002.png',
+            'cursor_frames/frame_003.png',
+            'cursor_frames/frame_004.png',
+            'cursor_frames/frame_005.png',
+            'cursor_frames/frame_006.png',
+            'cursor_frames/frame_007.png'
+        ];
+        
+        let currentFrame = 0;
+        const animationSpeed = 100; // 100ms per frame = 800ms total cycle
+        const statusDiv = document.getElementById('status');
+        
+        // Create style element for dynamic cursor updates
+        const styleElement = document.createElement('style');
+        styleElement.id = 'rainbow-cursor-style';
+        document.head.appendChild(styleElement);
+        
+        // Function to update cursor
+        function updateCursor() {
+            const cursorUrl = cursorFrames[currentFrame];
+            styleElement.textContent = `
+                * {
+                    cursor: url('${cursorUrl}'), auto !important;
+                }
+                input[type="text"],
+                input[type="email"],
+                input[type="password"],
+                input[type="search"],
+                textarea,
+                select {
+                    cursor: text !important;
+                }
+            `;
+            
+            // Update frame indicators
+            for (let i = 0; i < 8; i++) {
+                const indicator = document.getElementById(`frame-${i}`);
+                if (indicator) {
+                    indicator.className = `frame-indicator ${i === currentFrame ? 'frame-active' : 'frame-inactive'}`;
+                }
+            }
+            
+            // Move to next frame
+            currentFrame = (currentFrame + 1) % cursorFrames.length;
+        }
+        
+        // Preload all cursor frames
+        let loadedFrames = 0;
+        let errorFrames = 0;
+        
+        statusDiv.className = 'status info';
+        statusDiv.innerHTML = 'Loading cursor frames...';
+        
+        cursorFrames.forEach((frame, index) => {
+            const img = new Image();
+            img.onload = () => {
+                loadedFrames++;
+                console.log(`✅ Frame ${index} loaded: ${frame}`);
+                
+                // Start animation once all frames are loaded
+                if (loadedFrames === cursorFrames.length) {
+                    console.log('🌈 All frames loaded! Starting animation...');
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✅ All cursor frames loaded! Animation is running at 100ms per frame.';
+                    
+                    // Start the animation
+                    updateCursor(); // Set initial cursor
+                    setInterval(updateCursor, animationSpeed); // Start animation loop
+                }
+            };
+            img.onerror = () => {
+                errorFrames++;
+                console.error(`❌ Failed to load frame ${index}: ${frame}`);
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Failed to load cursor frames (${errorFrames} errors). Check that cursor_frames folder exists.`;
+            };
+            img.src = frame;
+        });
+        
+        // Debug info
+        console.log('Animation speed:', animationSpeed + 'ms per frame');
+        console.log('Total cycle time:', animationSpeed * 8 + 'ms');
+    </script>
+</body>
+</html>

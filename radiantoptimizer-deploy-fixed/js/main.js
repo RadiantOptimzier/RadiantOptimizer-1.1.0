@@ -72,18 +72,6 @@ if (canvas) {
             if (this.x < 0 || this.x > width) this.vx *= -1;
             if (this.y < 0 || this.y > height) this.vy *= -1;
 
-            // Simplified mouse repulsion
-            if (mouse.x && mouse.y) {
-                const dx = this.x - mouse.x;
-                const dy = this.y - mouse.y;
-                const distSq = dx * dx + dy * dy;
-                if (distSq < 14400) { // 120 * 120
-                    const dist = Math.sqrt(distSq);
-                    this.x += (dx / dist) * 1.2;
-                    this.y += (dy / dist) * 1.2;
-                }
-            }
-
             // Optimized text repulsion
             for (let i = 0; i < textElements.length; i++) {
                 const textBox = textElements[i];
@@ -137,7 +125,7 @@ if (canvas) {
 
     function initParticles() {
         particles = [];
-        const particleCount = Math.floor((width * height) / 1200); // Tripled+ particle count for very full starfield
+        const particleCount = Math.floor((width * height) / 600); // 5x+ particle count for extremely full starfield
         for (let i = 0; i < particleCount; i++) {
             particles.push(new Particle());
         }

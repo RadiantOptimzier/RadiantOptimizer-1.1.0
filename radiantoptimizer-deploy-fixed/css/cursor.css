@@ -1,0 +1,17 @@
+/* Black Rainbow Animated Cursor - Minimal CSS */
+
+/* This file is mostly empty because cursor.js handles everything */
+/* Keeping this file for compatibility with existing includes */
+
+/* Preload cursor frames to prevent flashing */
+body::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+    content: url('../cursor_frames/frame_000.png') url('../cursor_frames/frame_001.png') 
+             url('../cursor_frames/frame_002.png') url('../cursor_frames/frame_003.png')
+             url('../cursor_frames/frame_004.png') url('../cursor_frames/frame_005.png')
+             url('../cursor_frames/frame_006.png') url('../cursor_frames/frame_007.png');
+}

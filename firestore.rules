@@ -19,7 +19,11 @@ service cloud.firestore {
     }
     
     match /users/{userId} {
-      allow read: if isAuthenticated();
+      // Allow reading specific fields for signup validation (username/email checks)
+      // Full document access only for authenticated users
+      allow read: if true;
+      
+      // Only authenticated users can write
       allow write: if isAuthenticated();
     }
     

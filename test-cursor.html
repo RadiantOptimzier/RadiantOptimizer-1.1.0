@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Cursor Test</title>
+    <style>
+        /* Black Rainbow Animated Cursor */
+        
+        /* Set custom cursor for all elements */
+        * {
+            cursor: url('cursor_frames/frame_000.png'), auto !important;
+        }
+
+        /* Apply animation to the root and all elements */
+        :root {
+            cursor: url('cursor_frames/frame_000.png'), auto;
+            animation: cursor-rainbow 800ms steps(8) infinite;
+        }
+
+        body, body * {
+            cursor: url('cursor_frames/frame_000.png'), auto !important;
+            animation: cursor-rainbow 800ms steps(8) infinite;
+        }
+
+        /* Rainbow animation keyframes */
+        @keyframes cursor-rainbow {
+            0%   { cursor: url('cursor_frames/frame_000.png'), auto; }
+            12.5%{ cursor: url('cursor_frames/frame_001.png'), auto; }
+            25%  { cursor: url('cursor_frames/frame_002.png'), auto; }
+            37.5%{ cursor: url('cursor_frames/frame_003.png'), auto; }
+            50%  { cursor: url('cursor_frames/frame_004.png'), auto; }
+            62.5%{ cursor: url('cursor_frames/frame_005.png'), auto; }
+            75%  { cursor: url('cursor_frames/frame_006.png'), auto; }
+            87.5%{ cursor: url('cursor_frames/frame_007.png'), auto; }
+            100% { cursor: url('cursor_frames/frame_000.png'), auto; }
+        }
+
+        /* Keep text cursor for inputs */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="search"],
+        textarea,
+        select {
+            cursor: text !important;
+            animation: none !important;
+        }
+
+        /* Preload cursor frames */
+        body::after {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            z-index: -1;
+            content: url('cursor_frames/frame_000.png') url('cursor_frames/frame_001.png') 
+                     url('cursor_frames/frame_002.png') url('cursor_frames/frame_003.png')
+                     url('cursor_frames/frame_004.png') url('cursor_frames/frame_005.png')
+                     url('cursor_frames/frame_006.png') url('cursor_frames/frame_007.png');
+        }
+
+        /* Page styles */
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            padding: 50px;
+        }
+
+        .test-area {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            background: #252525;
+            color: white;
+            border: 1px solid #00ff88;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #0f3f0f;
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .error {
+            background: #3f0f0f;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌈 Rainbow Cursor Test Page</h1>
+    
+    <div class="test-area">
+        <h2>Test the animated rainbow cursor here!</h2>
+        <p>You should see a BLACK ARROW cursor with an animated RAINBOW GRADIENT outline.</p>
+        <p>The rainbow colors cycle through the spectrum every 800ms.</p>
+        
+        <button>Hover over me!</button>
+        <button>Click me!</button>
+        
+        <br><br>
+        
+        <input type="text" placeholder="Type something here...">
+        
+        <br><br>
+        
+        <div id="status"></div>
+        
+        <p>✅ Black arrow with animated rainbow stroke</p>
+        <p>✅ 8 frames cycling every 800ms</p>
+        <p>✅ Pure CSS animation - no JavaScript needed</p>
+        <p>✅ Zero latency impact</p>
+    </div>
+    
+    <div class="test-area">
+        <h3>Troubleshooting:</h3>
+        <p>If you don't see the cursor:</p>
+        <ul>
+            <li>Check browser console for any errors</li>
+            <li>Make sure you're using Chrome/Edge for best support</li>
+            <li>Clear browser cache (Ctrl+F5)</li>
+            <li>The cursor frames status will show below</li>
+        </ul>
+    </div>
+
+    <script>
+        console.log('Rainbow cursor test page loaded');
+        
+        // Check if cursor frames are loading
+        const statusDiv = document.getElementById('status');
+        const framesToTest = [
+            'cursor_frames/frame_000.png',
+            'cursor_frames/frame_001.png',
+            'cursor_frames/frame_002.png',
+            'cursor_frames/frame_003.png',
+            'cursor_frames/frame_004.png',
+            'cursor_frames/frame_005.png',
+            'cursor_frames/frame_006.png',
+            'cursor_frames/frame_007.png'
+        ];
+        
+        let loadedCount = 0;
+        let errorCount = 0;
+        
+        framesToTest.forEach((frame, index) => {
+            const img = new Image();
+            img.onload = () => {
+                loadedCount++;
+                console.log(`✅ Frame ${index} loaded: ${frame}`);
+                if (loadedCount === framesToTest.length) {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✅ All cursor frames loaded successfully! The cursor should be visible and animated.';
+                }
+            };
+            img.onerror = () => {
+                errorCount++;
+                console.error(`❌ Frame ${index} failed: ${frame}`);
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `❌ Failed to load cursor frames (${errorCount}/${framesToTest.length} failed)`;
+            };
+            img.src = frame;
+        });
+        
+        // Log cursor style
+        setTimeout(() => {
+            const computedStyle = window.getComputedStyle(document.body);
+            console.log('Body cursor style:', computedStyle.cursor);
+        }, 100);
+    </script>
+</body>
+</html>

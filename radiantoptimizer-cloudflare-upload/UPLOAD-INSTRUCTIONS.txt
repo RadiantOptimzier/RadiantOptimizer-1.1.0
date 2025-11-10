@@ -1,0 +1,13 @@
+CLOUDFLARE PAGES UPLOAD INSTRUCTIONS
+=====================================
+
+1. Open this folder in File Explorer:
+   c:\Users\wicke\Desktop\radiantoptimizer\radiantoptimizer-cloudflare-upload
+
+2. Select ALL files and folders (Ctrl+A)
+
+3. Drag them to Cloudflare Pages upload area
+
+4. Wait for deployment to complete
+
+That's it!
