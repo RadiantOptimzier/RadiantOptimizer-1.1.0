@@ -395,8 +395,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Download RadiantOptimizer function
 function downloadOptimizer() {
-    // Placeholder URL - will be updated with actual GitHub release URL
-    const downloadUrl = 'YOUR_GITHUB_DOWNLOAD_LINK_HERE';
+    // Direct download URL from GitHub release v1.1.0
+    const downloadUrl = 'https://github.com/RadiantOptimzier/RadiantOptimizer-1.1.0/releases/download/v1.1.0/RadiantOptimizerSetup.exe';
     
     // Show downloading message
     const button = document.getElementById('downloadButton');
